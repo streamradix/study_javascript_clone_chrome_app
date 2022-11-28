@@ -1,20 +1,14 @@
-const a = 10;
-const b = 20;
-const c = "10";
-const d = "20";
+const loginInput = document.querySelector("#login-form input");
+const loginButton = document.querySelector("#login-form button");
 
-console.log(a > b);
-console.log(a >= b);
-console.log(a >= a);
+function onLoginBtnClick() {
+	const userName = loginInput.value;
 
-console.log(a < b);
-console.log(a <= b);
-console.log(a <= a);
+	if (userName === "") {
+		alert("Please write your name");
+	} else if (userName.length > 15) {
+		alert("Too Long name");
+	}
+}
 
-console.log(a == b);
-console.log(a == a);
-console.log(a == c);
-
-console.log(a === b);
-console.log(a === a);
-console.log(a === c);
+loginButton.addEventListener("click", onLoginBtnClick);
