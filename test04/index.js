@@ -4,8 +4,7 @@ const daysOfMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const isLeakYear = function (year) {
 	if (year % 400 === 0) return true;
 	if (year % 100 === 0) return false;
-	if (year % 4 === 0) return true;
-	return false;
+	return year % 4 === 0;
 };
 
 const getDaysOfYear = function (dateObject) {
@@ -19,27 +18,24 @@ const getDaysOfYear = function (dateObject) {
 	// Leak year && after February
 	if (isLeakYear(dateObject.getFullYear()) && month > 1) result += 1;
 
-	for (let index = 0; index < month; index++) {
-		result += daysOfMonth[index];
-	}
+	// sum of days in the past month
+	for (let index = 0; index < month; index++) result += daysOfMonth[index];
 
 	return result;
 };
 
-const getNextXMas = function (dateObject) {
-	let nextXMas = dateObject.getFullYear();
+const getNextXMas = function (nowDate) {
+	let xMasYear = nowDate.getFullYear();
 
-	if (dateObject.getMonth() === 11 && dateObject.getDate() >= 25) {
-		nextXMas += 1;
-	}
+	// next XMas is in next Year
+	if (nowDate.getMonth() === 11 && nowDate.getDate() >= 25) xMasYear += 1;
 
-	return new Date(nextXMas, 11, 25, 0, 0, 0);
+	return new Date(xMasYear, 11, 25, 0, 0, 0);
 };
 
 const showRemainToXMas = function () {
 	const now = new Date();
 	const thisYear = now.getFullYear();
-
 	const nextXMas = getNextXMas(now);
 
 	let ramainDays = getDaysOfYear(nextXMas) - getDaysOfYear(now);
