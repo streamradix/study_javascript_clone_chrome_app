@@ -9,55 +9,69 @@ const isLeakYear = function (year) {
 };
 
 const getDaysOfYear = function (dateObject) {
-	const year = dateObject.getFullYear();
 	const month = dateObject.getMonth();
 	const date = dateObject.getDate();
 
-	if (month === 0) return date;
+	if (month === 0) return date; // January
 
 	let result = date;
+
+	// Leak year && after February
+	if (isLeakYear(dateObject.getFullYear()) && month > 1) result += 1;
+
 	for (let index = 0; index < month; index++) {
 		result += daysOfMonth[index];
 	}
 
-	if (isLeakYear(year)) result += 1;
-
 	return result;
 };
 
-const getNextChristmas = function (dateObject) {
-	let nextChristmasYear = dateObject.getFullYear();
-	
+const getNextXMas = function (dateObject) {
+	let nextXMas = dateObject.getFullYear();
+
 	if (dateObject.getMonth() === 11 && dateObject.getDate() >= 25) {
-		nextChristmasYear += 1;
+		nextXMas += 1;
 	}
 
-	return new Date(nextChristmasYear, 11, 25);
+	return new Date(nextXMas, 11, 25, 0, 0, 0);
 };
 
-const getRemainTime = function (time, numberSystem) {
-	const remain = numberSystem - time;
-	if (remain === numberSystem) return 0;
-	return remain;
-};
-
-const remainTimesToChristmas = function () {
+const showRemainToXMas = function () {
 	const now = new Date();
-	const nextChristmas = getNextChristmas(now);
-	
-	const year = now.getFullYear();
-	const hours = String(getRemainTime(now.getHours(), 24) - 1).padStart(2, "0");
-	const minutes = String(getRemainTime(now.getMinutes(), 60) - 1).padStart(2, "0");
-	const seconds = String(getRemainTime(now.getSeconds(), 60)).padStart(2, "0");
+	const thisYear = now.getFullYear();
 
-	let ramainDays = getDaysOfYear(nextChristmas) - getDaysOfYear(now) - 1;
+	const nextXMas = getNextXMas(now);
 
-	if (nextChristmas.getFullYear() != year) {
-		ramainDays += isLeakYear(year) ? 366 : 365;
+	let ramainDays = getDaysOfYear(nextXMas) - getDaysOfYear(now);
+	let remainHours = nextXMas.getHours() - now.getHours();
+	let remainMinutes = nextXMas.getMinutes() - now.getMinutes();
+	let remainSeconds = nextXMas.getSeconds() - now.getSeconds();
+
+	if (remainSeconds < 0) {
+		remainMinutes -= 1;
+		remainSeconds += 60;
 	}
+
+	if (remainMinutes < 0) {
+		remainHours -= 1;
+		remainMinutes += 60;
+	}
+
+	if (remainHours < 0) {
+		ramainDays -= 1;
+		remainHours += 24;
+	}
+
+	if (thisYear !== nextXMas.getFullYear()) {
+		ramainDays += isLeakYear(thisYear) ? 366 : 365;
+	}
+
+	const hours = String(remainHours).padStart(2, "0");
+	const minutes = String(remainMinutes).padStart(2, "0");
+	const seconds = String(remainSeconds).padStart(2, "0");
 
 	clockTitle.innerText = `${ramainDays}d ${hours}h ${minutes}m ${seconds}s`;
 };
 
-setInterval(remainTimesToChristmas, 1000);
-remainTimesToChristmas();
+setInterval(showRemainToXMas, 1000);
+showRemainToXMas();
