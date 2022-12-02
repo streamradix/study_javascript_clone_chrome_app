@@ -19,10 +19,23 @@ const colors = [
 	"#ff3f34",
 ];
 
+function getColor() {
+	return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function getRandomInteger(integer) {
+	return Math.floor(Math.random() * integer);
+}
+
 const changeBackground = function () {
-	const firstColor = colors[Math.floor(Math.random() * colors.length)];
-	const secondColor = colors[Math.floor(Math.random() * colors.length)];
-	const degree = Math.floor(Math.random() * 360);
+	const firstColor = getColor();
+	let secondColor = getColor();
+
+	while (firstColor === secondColor) {
+		secondColor = getColor();
+	}
+
+	const degree = getRandomInteger(360);
 
 	document.body.style.background = `linear-gradient(${degree}deg, ${firstColor}, ${secondColor})`;
 };
@@ -31,3 +44,5 @@ changeBackground();
 
 const button = document.querySelector("button");
 button.addEventListener("click", changeBackground);
+
+setInterval(changeBackground, 1000);
